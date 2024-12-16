@@ -20,12 +20,18 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateProgressBar() {
     mainPlayer.getCurrentTime().then(function(seconds) {
       mainPlayer.getDuration().then(function(duration) {
+        // Legg til logg for å sjekke verdiene
+        console.log("Current time: " + seconds + " seconds");
+        console.log("Duration: " + duration + " seconds");
+
         var progress = (seconds / duration) * 100;  // Beregn fremdriften i prosent
         progressBar.style.width = progress + '%';    // Oppdater progress baren
       });
+    }).catch(function(error) {
+      console.error('Error getting current time:', error);
     });
   }
-  
+
   // Oppdater progress baren hvert 0.5 sekund
   setInterval(updateProgressBar, 500);
 
