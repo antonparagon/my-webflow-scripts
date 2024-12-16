@@ -1,48 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Få tak i iframe-elementene (videoene)
+  // Hent iframe-elementene for intro og hovedvideoene
   var introIframe = document.getElementById('intro-video');
   var mainIframe = document.getElementById('main-video');
   
-  // Initialiser Vimeo Player for begge videoene
+  // Initialiser Vimeo-spillerne for begge videoene
   var introPlayer = new Vimeo.Player(introIframe);
   var mainPlayer = new Vimeo.Player(mainIframe);
   
-  // Få tak i unmute-knappen
+  // Hent knappene fra DOM
   var unmuteButton = document.getElementById('unmute-button');
   var pauseButton = document.getElementById('pause-button');
   var playButton = document.getElementById('play-button');
+
+  // Hent progress bar-elementene
+  var progressBar = document.getElementById('progress-bar');
+  var progressContainer = document.getElementById('progress-container');
   
-  // Unmute-knappen skal starte main-videoen
+  // Funksjon for å oppdatere progress baren
+  function updateProgressBar() {
+    mainPlayer.getCurrentTime().then(function(seconds) {
+      mainPlayer.getDuration().then(function(duration) {
+        var progress = (seconds / duration) * 100;  // Beregn fremdriften i prosent
+        progressBar.style.width = progress + '%';    // Oppdater progress baren
+      });
+    });
+  }
+  
+  // Oppdater progress baren hvert 0.5 sekund
+  setInterval(updateProgressBar, 500);
+
+  // Når Unmute-knappen trykkes, start hovedvideoen med lyd
   unmuteButton.addEventListener('click', function() {
-    // Stopp intro-videoen og start main-videoen
-    introPlayer.pause();  // Pause intro-videoen
-
-    // Skjul intro-video og vis main-video
-    introIframe.style.display = 'none';
-    mainIframe.style.display = 'block';
-
-    // Start main-videoen fra starten med lyd
+    introPlayer.pause(); // Pause intro-videoen
+    
+    // Skjul intro-videoen og vis hovedvideoen
+    mainIframe.style.display = 'block';  // Vis hovedvideoen
+    introIframe.style.display = 'none';  // Skjul intro-videoen
+    
+    // Start hovedvideoen fra start og aktiver lyd
     mainPlayer.setCurrentTime(0).then(function() {
-      mainPlayer.setVolume(1);  // Sett volumet til 1 (unmute)
-      mainPlayer.play();        // Spill main-videoen
+      mainPlayer.setVolume(1); // Unmute hovedvideoen
+      mainPlayer.play(); // Spill av hovedvideoen
     });
 
-    // Skjul unmute-button og vis pause-button
+    // Skjul Unmute-knappen og vis Pause-knappen
     unmuteButton.style.display = 'none';
     pauseButton.style.display = 'inline-block';
   });
 
-  // Pause-knappen skal pause main-videoen
+  // Når Pause-knappen trykkes, pause hovedvideoen
   pauseButton.addEventListener('click', function() {
-    mainPlayer.pause();  // Pause main-videoen
-    pauseButton.style.display = 'none';  // Skjul pause-button
-    playButton.style.display = 'inline-block';  // Vis play-button
+    mainPlayer.pause(); // Pause hovedvideoen
+    pauseButton.style.display = 'none'; // Skjul Pause-knappen
+    playButton.style.display = 'inline-block'; // Vis Play-knappen
   });
 
-  // Play-knappen skal starte main-videoen fra pausestedet
+  // Når Play-knappen trykkes, spill av hovedvideoen fra den pauserte posisjonen
   playButton.addEventListener('click', function() {
-    mainPlayer.play();  // Spill main-videoen fra pausestedet
-    playButton.style.display = 'none';  // Skjul play-button
-    pauseButton.style.display = 'inline-block';  // Vis pause-button
+    mainPlayer.play(); // Spill av hovedvideoen
+    playButton.style.display = 'none'; // Skjul Play-knappen
+    pauseButton.style.display = 'inline-block'; // Vis Pause-knappen
   });
 });
