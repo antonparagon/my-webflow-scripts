@@ -20,15 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateProgressBar() {
     mainPlayer.getCurrentTime().then(function(seconds) {
       mainPlayer.getDuration().then(function(duration) {
-        // Legg til logg for å sjekke verdiene
+        // Skriv ut informasjon i console for å sjekke at vi får verdier
         console.log("Current time: " + seconds + " seconds");
         console.log("Duration: " + duration + " seconds");
 
         var progress = (seconds / duration) * 100;  // Beregn fremdriften i prosent
+        console.log("Progress: " + progress + "%");  // Skriv ut progressen i prosent
         progressBar.style.width = progress + '%';    // Oppdater progress baren
       });
     }).catch(function(error) {
-      console.error('Error getting current time:', error);
+      console.error('Error getting current time or duration:', error);
     });
   }
 
@@ -52,19 +53,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Skjul Unmute-knappen og vis Pause-knappen
     unmuteButton.style.display = 'none';
     pauseButton.style.display = 'inline-block';
-  });
-
-  // Når Pause-knappen trykkes, pause hovedvideoen
-  pauseButton.addEventListener('click', function() {
-    mainPlayer.pause(); // Pause hovedvideoen
-    pauseButton.style.display = 'none'; // Skjul Pause-knappen
-    playButton.style.display = 'inline-block'; // Vis Play-knappen
-  });
-
-  // Når Play-knappen trykkes, spill av hovedvideoen fra den pauserte posisjonen
-  playButton.addEventListener('click', function() {
-    mainPlayer.play(); // Spill av hovedvideoen
-    playButton.style.display = 'none'; // Skjul Play-knappen
-    pauseButton.style.display = 'inline-block'; // Vis Pause-knappen
-  });
-});
